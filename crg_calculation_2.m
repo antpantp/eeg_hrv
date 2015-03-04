@@ -20,8 +20,12 @@ clc;
 % dir_in='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 % dir_out='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
-dir_out='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+% dir_out='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
+dir_out=dir_in;
+
 
 
 fileStruct=dir(strcat(dir_in,'*.mat'));

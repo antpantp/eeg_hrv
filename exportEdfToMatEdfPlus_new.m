@@ -21,13 +21,14 @@ for i=1:length(fileStruct)% for each file in the input folder
     split=strsplit(name,'-');% cell arrays of name parts between '-' sign
     SN=size(split,2)-1;% number of seizure markers in the record
     
+    %%%% opening file
+    fullPath = strcat(dirEdf,name,'.edf');
+    % Extracting data and meta info
+    [d.data, header] = mexSLOAD(fullPath);
     
     d.seizureStart=[];% empty array for seizure starts
     for sn=1:SN% for each seizure marker
         seizureCode = str2num(split{sn+1})% extracting the appropriate code
-        fullPath = strcat(dirEdf,name,'.edf');
-        % Extract data and meta info
-        [d.data, header] = mexSLOAD(fullPath);
         % finding Seizure Starts
         for code=1:length(header.EVENT.CodeDesc)
             seizureCodeEdf = strsplit(header.EVENT.CodeDesc{code},' ');
@@ -62,9 +63,10 @@ for i=1:length(fileStruct)% for each file in the input folder
             d.N = size(d.data,1);
             d.time = linspace(0, (d.N-1)/d.Fs  ,d.N);
             
-            % saving seizure starts
+            % seizure starts
             d.seizureStart = [d.seizureStart;  header.EVENT.POS( find...
                 (header.EVENT.TYP==seizureType) ) / d.Fs];
+            
             % seizure ends
             if ~isempty(seizureEndType)
                 d.seizureEnd = header.EVENT.POS( find...
@@ -72,8 +74,11 @@ for i=1:length(fileStruct)% for each file in the input folder
             else
                 d.seizureEnd=[];
             end
-            save(strcat(dirMat,name,'.mat'),'d','-v7.3');
             
+            d.seizureStart=sort(d.seizureStart);% sorting in ascending order
+            d.seizureEnd=sort(d.seizureEnd);
+            save(strcat(dirMat,name,'.mat'),'d','-v7.3');
+                        
             % printing info
             fprintf('Seizure starts:\n');
             datestr(d.seizureStart/3600/24, 'HH:MM:SS.FFF')

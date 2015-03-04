@@ -12,7 +12,15 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% open *.MAT files with separated seizures
 % dir_in='M:\EEG_ECG Haritonov\MAT\FocalSeizures\focal_seizures_ECG\with_seizures_separated\temp\';
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures seizures only\';
+
+
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
+dir_out=dir_in;
+
+
 fileStruct=dir(strcat(dir_in,'*.mat'));
 
 % before seizure
