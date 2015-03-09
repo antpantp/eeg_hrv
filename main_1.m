@@ -16,11 +16,11 @@ clc;
 % dir_in='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 % dir_out='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 
-% dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
-% dir_out='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
+dir_out='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal\';
 
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
-dir_out=dir_in;
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
+% dir_out=dir_in;
 
 seiz_end_code=19;
 exportEdfToMatEdfPlus_new(dir_in,dir_out, seiz_end_code);
@@ -48,8 +48,10 @@ crg_calculation_2;
 % dir_in='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 % dir_out='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\seizures_separated\';
 
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
-dir_out=dir_in;
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal\';
+dir_out='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures seizures only\';
+
+% dir_out=dir_in;
 
 signal_partition_into_seizures_new(dir_in, dir_out)
 
