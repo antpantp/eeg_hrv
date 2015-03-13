@@ -1,30 +1,40 @@
-function [hrv_mean, hrv_SDNN, hrv_LF_HF, hrv_LFn, hrv_HFn] = hrv_for_interpolated_signal(tNN,fs);
+function [m,varargout] = hrv_for_interpolated_signal(tNN,fs);
+%
+% varargout{1} -- hrv_mean
+% varargout{2} -- hrv_SDNN
+% varargout{3} -- hrv_LF_HF
+% varargout{4} -- hrv_LFn
+% varargout{5} -- hrv_HFn
+% varargout{6} -- hrv_RMSSD
 
+m=[];
 hrv_n = length(tNN); 
-hrv_HR = 60*1000*hrv_n/sum(tNN); % 1/s
 hrv_mean = sum(tNN)/hrv_n; % ms
 
+hrv_HR = 60*1000*hrv_n/sum(tNN); % 1/s
+varargout{1} = sum(tNN)/hrv_n; % ms
+
 s = sum((tNN-hrv_mean).*(tNN-hrv_mean));
-hrv_SDNN = sqrt(s/(hrv_n-1)); % ms
+varargout{2} = sqrt(s/(hrv_n-1)); % ms
 
 hrv_pNN50 = 0;
 i = find(diff(tNN) > 50); % > 50 ms
-hrv_RMSSD = sqrt(sum(diff(tNN).^2)/(hrv_n-1)); % ms
+varargout{6} = sqrt(sum(diff(tNN).^2)/(hrv_n-1)); % ms
 hrv_pNN50 = length(i)/hrv_n*100; % %
 
 
 ttNN = tNN(1);
 for i = 2:length(tNN),
- ttNN(i) = ttNN(i-1)+tNN(i);
+ ttNN(i) = ttNN(i-1)+tNN(i);% time base for NN intervals
 end
 
 % —пектральный анализ
-fN = 64;
-% if (hrv_n < fN) return;
+
 fN = length(tNN);
 ww = hamming(fN); % ќкно ’емминга
+
 % ww = hann(fN); % ќкно ’анна
-fNN = fft((tNN-mean(tNN)).*ww'); %  ?
+fNN = fft((tNN-mean(tNN)).*ww); %  ?
 
 
 %%%%%%%%%%%%%%5
@@ -37,7 +47,7 @@ fNN = fft((tNN-mean(tNN)).*ww'); %  ?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Anton, added on 24.01.2015
-f=linspace(0,fs/2,fN);% frequency vector in Hz
+f=linspace(0,fs,fN);% frequency vector in Hz
 % indicies for edge frequencies
 k=find(f>0.4); fHFi = k(1);  % 0.4 √ц
 k=find(f>0.15); fLFHFi = k(1); % 0.15 √ц 
@@ -53,7 +63,7 @@ hrv_VLF = sum(fPNN(fULFVLFi:fVLFLFi));
 hrv_LF = sum(fPNN(fVLFLFi:fLFHFi));
 hrv_HF = sum(fPNN(fLFHFi:fHFi));
   
-hrv_LF_HF = hrv_LF/hrv_HF; % 1
-hrv_LFn = hrv_LF/(hrv_TP-hrv_VLF)*100;% %
-hrv_HFn = hrv_HF/(hrv_TP-hrv_VLF)*100; % %
+varargout{3} = hrv_LF/hrv_HF; % 1
+varargout{4} = hrv_LF/(hrv_TP-hrv_VLF)*100;% %
+varargout{5} = hrv_HF/(hrv_TP-hrv_VLF)*100; % %
 end
