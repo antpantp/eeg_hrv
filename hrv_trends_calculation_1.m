@@ -5,28 +5,53 @@ close all
 clear all;
 clc
 
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
 % dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures seizures only\';
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\very_good\';
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\good\';
+
 
 T=600;% sec, duration of signal part before seizure
-Tw=60;% time window, sec
-To=30;% overlapping, sec
+Tw=30;% time window, sec
+% To=30;% overlapping, sec
+To=Tw/2;
 
 r=.01;% ApEn tolerance
+Ms=2;
 % % Ms=[2:5];% approximate entropy embedded dimension
 ms=[3:5]; % Permutation Entropy orders
-
+m=5;
 c=1;% counter
-par_name='LF_HF';%'RMSSD';% parameter name = fcode
+par_names={...
+%     'PE',...
+%     'HFn',...
+%     'LFn',...
+%     'LF_HF',...
+%     'RMSSD',...
+%     'AE'...
+'RR',...
+'Det',...
+'ADL',...
+'LLDL',...
+'EDL',...
+'Lam',...
+'TT',...
+'LLVL',...
+'RT1',...
+'RT2',...
+'RPDE',...
+'CC',...
+'Trans',...
+    };% parameter name = fcode
+% y_lim=[0 30];
 
-y_lim=[0 30];
 
-
-for Tw=[30]%m=ms%M=Ms
+for par_name=par_names
+for Tw=[30 60 120 ]%m=ms%M=Ms
     To=Tw/2;
     tic
     %before
-    [PE]=seizure_chracteristic_trends(dir_in,'before',par_name,T,Tw,To,2);
+    [PE]=seizure_chracteristic_trends(dir_in,'before',par_name,T,Tw,To,m);
     win_num=size(PE,2);
     
     %%%% boxplotting boxplots
@@ -36,15 +61,24 @@ for Tw=[30]%m=ms%M=Ms
         pe=[pe, PE{w}'];
         group=[group, w*ones(1,length(PE{w}))];
     end
+    N=min([length(PE{1}),length(PE{2})]);
+    P=[PE{1}(1:N),PE{2}(1:N)];
     figure
     boxplot(pe,group); set(gcf,'color','white');
-    title(['Before Seizure, ',par_name,' in window Tw=',num2str(Tw)],'Interpreter','none');...
+    title(['Before Seizure, ',par_name,' Tw=',num2str(Tw),' KW p='...
+        , num2str(kruskalwallis(P,[],'off'))],'Interpreter','none');...
         set(gca,'xdir','reverse');
-    ylim(y_lim);
+%     ylim(y_lim);
     grid on;
     xlabel('Window number with respect to seizure onset');
     ylabel(par_name,'Interpreter','none')
-
+%     if ttest2(PE{1},PE{2})==1
+%         disp([par_name, Tw])
+%     end
+    
+    
+    
+    
 %     % after
 %     [PE]=seizure_chracteristic_trends(dir_in,'after',par_name,T,Tw,To,2);
 %     win_num=size(PE,2);
@@ -71,6 +105,7 @@ for Tw=[30]%m=ms%M=Ms
 %     end
     c=c+1;
     t=toc
+end
 end
 % 
 % %%%%%%%%%%%%%%%%%%%

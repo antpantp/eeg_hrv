@@ -12,7 +12,7 @@ function [Params]=seizure_chracteristic_trends(dir_in,Flag,fcode,T,Tw,To,varargi
 % of PARAMS corresponds to values in time window close to seizure onset.
 %
 % T is the beginning of time range (in case of calculating before seizure),
-% and the end of time range (if calculating after seizure).
+% or the end of time range (if calculating after seizure).
 % , starting from T sec. before 
 %
 % Tw - time window, sec., 
@@ -57,20 +57,20 @@ kb=1;% seizure counter, before
 %%% calculating trends of characteristics before seizure
 for i=1:length(fileStruct)% all mat files
     load([dir_in,fileStruct(i).name]);
-    disp(fileStruct(i).name);% name of signal
+%     disp(fileStruct(i).name);% name of signal
     S=length(d.seizure);% number of seizures
-    disp(['Number of seizures in the signal = ',num2str(S)]);
+%     disp(['Number of seizures in the signal = ',num2str(S)]);
     
     for s=1:S; % for every seizure in the signal
         %%%%%% checking duration
         if strcmp(Flag,'before')
             %%%% checking if there is enough time before seizure
             if d.seizure(s).time_relBefore_2Hz(1)<T;
-                disp(['Not enough time before ',num2str(s),'-th seizure, proceeding to next one.'])
+%                 disp(['Not enough time before ',num2str(s),'-th seizure, proceeding to next one.'])
                 continue;
             end
-            disp(['Seizure number ',num2str(s),', duration is ',...
-                num2str( ( length(d.seizure(s).RRBefore_2Hz)-1  )/FS),' sec.']);
+%             disp(['Seizure number ',num2str(s),', duration is ',...
+%                 num2str( ( length(d.seizure(s).RRBefore_2Hz)-1  )/FS),' sec.']);
             
             %%%% finding the start of the part from T sec. before seizure
             st_ind=find(d.seizure(s).time_relBefore_2Hz<=T);
@@ -120,7 +120,51 @@ for i=1:length(fileStruct)% all mat files
                 [~,~,~,~,~,~,dummy1(w)] = hrv_for_interpolated_signal(q(:,w),FS);
             elseif strcmp(fcode,'LF_HF')
                 [~,~,~,dummy1(w)] = hrv_for_interpolated_signal(q(:,w),FS);
-
+            elseif strcmp(fcode,'LFn')
+                [~,~,~,~,dummy1(w)] = hrv_for_interpolated_signal(q(:,w),FS);
+            elseif strcmp(fcode,'HFn')
+                [~,~,~,~,~,dummy1(w)] = hrv_for_interpolated_signal(q(:,w),FS);
+            elseif strcmp(fcode,'RR')%'Recurrence rate'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(1);
+            elseif strcmp(fcode,'Det')%'Determinism'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(2);
+            elseif strcmp(fcode,'ADL')%'Averaged diagonal length'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(3);
+            elseif strcmp(fcode,'LLDL')%'Length of the longest diagonal line'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(4);
+            elseif strcmp(fcode,'EDL')%'Entropy of diagonal length'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(5);
+            elseif strcmp(fcode,'Lam')% 'Laminarity'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(6);
+            elseif strcmp(fcode,'TT')%'Trapping time'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(7);
+            elseif strcmp(fcode,'LLVL')%'Length of the longest vertical line'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(8);
+            elseif strcmp(fcode,'RT1')%'Recurrence time of 1st type'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(9);
+            elseif strcmp(fcode,'RT2')%'Recurrence time of 2nd type'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(10);
+            elseif strcmp(fcode,'RPDE')%'Recurrence period density entropy'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(11);
+            elseif strcmp(fcode,'CC')%'Clustering coefficient'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(12);
+            elseif strcmp(fcode,'Trans')% 'Transitivity'
+                [crqa_res, ~] = crqa_values_many_channels(q(:,w)');
+                dummy1(w)=crqa_res(13);
+                
+                
             else
                 error('No such function code; RTFM!')
             end

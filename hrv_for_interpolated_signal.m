@@ -1,11 +1,15 @@
 function [m,varargout] = hrv_for_interpolated_signal(tNN,fs);
-%
+% Function that calculates various HRV characteristics. FS is the sampling
+% rate of NN intervals. tNN is the vector containing NN intervals.
+% 21.03.2015
+
 % varargout{1} -- hrv_mean
 % varargout{2} -- hrv_SDNN
 % varargout{3} -- hrv_LF_HF
 % varargout{4} -- hrv_LFn
 % varargout{5} -- hrv_HFn
 % varargout{6} -- hrv_RMSSD
+% varargout{7} -- hrv_TP;
 
 m=[];
 hrv_n = length(tNN); 
@@ -66,4 +70,6 @@ hrv_HF = sum(fPNN(fLFHFi:fHFi));
 varargout{3} = hrv_LF/hrv_HF; % 1
 varargout{4} = hrv_LF/(hrv_TP-hrv_VLF)*100;% %
 varargout{5} = hrv_HF/(hrv_TP-hrv_VLF)*100; % %
+varargout{7} = hrv_TP;
+varargout{8} = hrv_TP;
 end

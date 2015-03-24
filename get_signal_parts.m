@@ -1,7 +1,7 @@
 function [S,n]=get_signal_parts(sig,win,ovr)
-% Function S=getsignalpart(sig,win,ovr) returns matrix S with the parts of
-% the signal SIG of WIN samples diration arranged columnwise, taken with the overlap
-% OVR samples. N is the number of obtained signal parts.
+% Function S=getsignalpart(sig,win,ovrl) returns matrix S with the parts of
+% the signal SIG of WIN diration arranged columnwise, taken with the overlap
+% OVR. N is the number of obtained signal parts.
 
 N=length(sig);
 n=floor((N-win)/(win-ovr));

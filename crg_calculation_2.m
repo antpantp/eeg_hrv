@@ -24,7 +24,8 @@ dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal\';
 % dir_out='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
 
 % dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
-dir_out=dir_in;
+% dir_out=dir_in;
+dir_out='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal_0_2\';
 
 
 
