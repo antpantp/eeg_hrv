@@ -43,7 +43,7 @@ for i=1:length(fileStruct)% all mat files
     %%% interpolation with same Fs as in EEG and ECG
     % preventing NaNs after interpolation:
     rr=[rr(1); rr; rr(end)];% adding fake first and last RR interval, to have smooth series
-    rr_t=[0; rr_t; transpose(d.time(end))];% adding zero time before, and last time instant equal to record duration
+    rr_t=[0; rr_t; d.time(end)];% adding zero time before, and last time instant equal to record duration
     RR_interp = interp1(rr_t,rr,d.time);% linear interpolation by default
     d.RR_raw=rr;% initial RR-intervals
     d.RR_pos=rr_t;% time positions of initial RR-intervals
