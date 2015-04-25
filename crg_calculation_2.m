@@ -48,8 +48,6 @@ for i=1:length(fileStruct)% all mat files
     d.RR_raw=rr;% initial RR-intervals
     d.RR_pos=rr_t;% time positions of initial RR-intervals
     d.RR=RR_interp;% interpolated RR-intervals, CRG
-figure
-plot(rr_t,rr)
     %%% interpolation with Fs=2 Hz
     Fs=2;% Hz
     time_2Hz=0:1/Fs:d.time(end);
