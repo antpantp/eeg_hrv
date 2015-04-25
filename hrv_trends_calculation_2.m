@@ -1,7 +1,7 @@
 % calculating trends of RR characteristics over time
-% calculation of either trends before and|or after seizure
-% 07.03.2015 -- start
-% 28.032015 -- KW test added
+% visuzlization of both before and after, and KW test of last window before 
+% and first window after
+% 28.03.2015 -- start
 
 close all
 clear all;
@@ -14,7 +14,7 @@ clc
 dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal_0_2 seizures only\';
 
 
-T=600;% sec, duration of signal part before seizure
+T=300;% sec, duration of signal part before seizure
 Tw=30;% time window, sec
 % To=30;% overlapping, sec
 To=Tw/2;
@@ -23,7 +23,7 @@ r=.01;% ApEn tolerance
 Ms=2;
 % % Ms=[2:5];% approximate entropy embedded dimension
 ms=[3:5]; % Permutation Entropy orders
-m=4;
+m=5;
 c=1;% counter
 par_names={...
 %     'PE',...
@@ -32,85 +32,70 @@ par_names={...
 %     'LF_HF',...
 %     'RMSSD',...
 %     'AE'...
-'RR',...
-'Det',...
-'ADL',...
+% 'RR',...
+% 'Det',...
+% 'ADL',...
 % 'LLDL',...
 % 'EDL',...
 % 'Lam',...
 % 'TT',...
 % 'LLVL',...
 % 'RT1',...
-% 'RT2',...
-% 'RPDE',...
-% 'CC',...
-% 'Trans',...
+'RT2',...
+'RPDE',...
+'CC',...
+'Trans',...
     };% parameter name = fcode
 % y_lim=[0 30];
 
 
 for par_name=par_names
 for Tw=[30 60 90 120 150 180]%m=ms%M=Ms
-    par_name
     Tw
     To=Tw/2;
     tic
-    %before
-    [PE]=seizure_chracteristic_trends(dir_in,'before',par_name,T,Tw,To,m);
-    win_num=size(PE,2);
+    % before seizure
+    [PEb]=seizure_chracteristic_trends(dir_in,'before',par_name,T,Tw,To,m);
+    win_num=size(PEb,2);
     
-    %%%% boxplotting boxplots
-    pe=[];
-    group=[];
+    %%%% preparations to boxplotting boxplots
+    peb=[];
+    groupb=[];
     for w=1:win_num
-        pe=[pe, PE{w}'];
-        group=[group, w*ones(1,length(PE{w}))];
+        peb=[peb, PEb{w}'];
+        groupb=[groupb, -1*w*ones(1,length(PEb{w}))];
     end
-    N=min([length(PE{1}),length(PE{2})]);
-    P=[PE{1}(1:N),PE{2}(1:N)];
+    
+    
+    
+    % after seizure
+    [PEa]=seizure_chracteristic_trends(dir_in,'after',par_name,T,Tw,To,m);
+    win_num=size(PEa,2);
+    
+    %%%% preparations to boxplotting boxplots
+    pea=[];
+    groupa=[];
+    for w=1:win_num
+        pea=[pea, PEa{w}'];
+        groupa=[groupa, w*ones(1,length(PEa{w}))];
+    end
+    
+    %%% preparing for KW test
+    N=min([length(PEb{1}),length(PEa{1})]);
+    P=[PEb{1}(1:N),PEa{1}(1:N)];
+    pe=[peb pea];
+    group=[groupb groupa];
     KW=kruskalwallis(P,[],'off')
     if KW<=.2
         figure
         boxplot(pe,group); set(gcf,'color','white');
-        title(['Before Seizure, ',par_name,' Tw=',num2str(Tw),' KW p='...
+        title(['Before and After Seizure, ',par_name,' Tw=',num2str(Tw),' KW p='...
             , num2str(KW)],'Interpreter','none');...
-            set(gca,'xdir','reverse');
-        %     ylim(y_lim);
+            set(gca,'xdir','normal');
         grid on;
         xlabel('Window number with respect to seizure onset');
         ylabel(par_name,'Interpreter','none')
     end
-    
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %     figure;
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %     hist(PE{1},30);set(gcf,'color','white');
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %     figure
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %     hist(PE{2},30);set(gcf,'color','white');
-       
-    
-    
-%     % after
-%     [PE]=seizure_chracteristic_trends(dir_in,'after',par_name,T,Tw,To,m);
-%     win_num=size(PE,2);
-%     
-%     %%%% boxplotting boxplots
-%     pe=[];
-%     group=[];
-%     for w=1:win_num
-%         pe=[pe, PE{w}'];
-%         group=[group, w*ones(1,length(PE{w}))];
-%     end
-%     N=min([length(PE{1}),length(PE{2})]);
-%     P=[PE{1}(1:N),PE{2}(1:N)];
-%     figure
-%     boxplot(pe,group); set(gcf,'color','white');
-%     title(['After Seizure, ',par_name,' Tw=',num2str(Tw),' KW p='...
-%         , num2str(kruskalwallis(P,[],'off'))],'Interpreter','none');...
-%         set(gca,'xdir','normal');
-% %     ylim(y_lim);
-%     grid on;
-%     xlabel('Window number with respect to seizure onset');
-%     ylabel(par_name,'Interpreter','none')
-
 
 
 %     for w=1:win_num

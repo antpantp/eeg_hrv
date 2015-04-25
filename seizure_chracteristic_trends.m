@@ -84,11 +84,11 @@ for i=1:length(fileStruct)% all mat files
         elseif strcmp(Flag,'after')%%% after seizure
             %%%% checking if there is enough time after seizure
             if d.seizure(s).time_relAfter_2Hz(end)<T;
-                disp(['Not enough time before ',num2str(s),'-th seizure, proceeding to next one.'])
+%                 disp(['Not enough time before ',num2str(s),'-th seizure, proceeding to next one.'])
                 continue;
             end
-            disp(['Seizure number ',num2str(s),', duration is ',...
-                num2str( ( length(d.seizure(s).RRAfter_2Hz)-1  )/FS),' sec.']);
+%             disp(['Seizure number ',num2str(s),', duration is ',...
+%                 num2str( ( length(d.seizure(s).RRAfter_2Hz)-1  )/FS),' sec.']);
             
             %%%% finding the end of the part from T sec. after seizure
             end_ind=find(d.seizure(s).time_relAfter_2Hz>=T);

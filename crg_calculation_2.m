@@ -9,6 +9,8 @@
 % 24.01.2015 -- start
 % 20.02.2015 -- minor corrections, verification
 % 21.02.2015 -- field added with RR intervals interpolated with Fs=2 Hz
+% 25.04.2015 -- bug fixed, NaN in the beginning and end of the interpolated
+% RR intervals
 
 close all;
 clear;
@@ -20,12 +22,13 @@ clc;
 % dir_in='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 % dir_out='D:\Dropbox\my_matlab_code\EEG_Pavlova\old_stuff\edf_files\';
 
-dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal\';
+% dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal\';
 % dir_out='D:\DATA\ЭЭГ_от_Харитонова\Focal Seizures\';
 
 % dir_in='D:\DATA\ЭЭГ_от_Харитонова\temp\';
-% dir_out=dir_in;
-dir_out='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal_0_2\';
+dir_in='D:\DATA\ЭЭГ_от_Харитонова\MAT\generalized seizures initial signals\';
+dir_out=dir_in;
+% dir_out='D:\DATA\ЭЭГ_от_Харитонова\MAT\Focal Seizures initial signal_0_2\';
 
 
 
@@ -36,12 +39,17 @@ for i=1:length(fileStruct)% all mat files
     ind = findChannelIndex(d.labels,{'ECG'});% find index of ECG channel
     if isempty(ind); continue; end
     [rr,rr_t]=extract_rr_as_function(d.data(:,ind),d.Fs);% extraction of RR and corresponding time instants
+    
     %%% interpolation with same Fs as in EEG and ECG
+    % preventing NaNs after interpolation:
+    rr=[rr(1); rr; rr(end)];% adding fake first and last RR interval, to have smooth series
+    rr_t=[0; rr_t; transpose(d.time(end))];% adding zero time before, and last time instant equal to record duration
     RR_interp = interp1(rr_t,rr,d.time);% linear interpolation by default
     d.RR_raw=rr;% initial RR-intervals
     d.RR_pos=rr_t;% time positions of initial RR-intervals
     d.RR=RR_interp;% interpolated RR-intervals, CRG
-
+figure
+plot(rr_t,rr)
     %%% interpolation with Fs=2 Hz
     Fs=2;% Hz
     time_2Hz=0:1/Fs:d.time(end);
